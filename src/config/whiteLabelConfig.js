@@ -1,5 +1,5 @@
-// White Label Configuration
-// This file can be easily customized for different delivery companies
+// LMDhub - White Label Configuration
+// This file contains all configurable settings for white-labeling the platform
 
 export const whiteLabelConfig = {
   // Company Information
@@ -13,105 +13,120 @@ export const whiteLabelConfig = {
     website: 'https://lmdhub.com'
   },
 
-  // Branding
+  // Branding & Design
   branding: {
     primaryColor: '#2563eb',
     secondaryColor: '#1e40af',
     accentColor: '#f59e0b',
+    successColor: '#10b981',
+    warningColor: '#f59e0b',
+    errorColor: '#ef4444',
     logo: null, // URL to company logo
-    favicon: null // URL to favicon
+    favicon: null, // URL to favicon
+    fonts: {
+      primary: 'Inter',
+      secondary: 'Roboto'
+    }
   },
 
   // Service Areas
   serviceAreas: {
-    primary: 'Salt Lake City Metro',
-    radius: 15, // miles
-    cities: ['Salt Lake City', 'Sandy', 'West Jordan', 'Murray', 'Taylorsville'],
-    states: ['UT']
+    primary: 'Salt Lake City, UT',
+    secondary: ['Provo', 'Ogden', 'Park City', 'Sandy', 'West Valley City'],
+    radius: 50, // miles
+    coverage: {
+      sameDay: true,
+      nextDay: true,
+      scheduled: true,
+      urgent: true
+    }
   },
 
   // Pricing Structure
   pricing: {
-    basePrice: 25,
+    baseRate: 25,
     perMile: 2.50,
+    multipleDrops: {
+      enabled: true,
+      additionalFee: 5
+    },
     terrainFees: {
-      flat: 0,
-      hilly: 15,
-      mountainous: 25,
-      rural: 20
+      enabled: true,
+      mountain: 15,
+      rural: 10,
+      urban: 0
     },
-    multipleDropFee: 12,
-    heavyItemFee: 8,
-    rushFee: 10
-  },
-
-  // Business Categories for Lead Generation
-  businessCategories: {
-    'retail-stores': {
-      name: 'Retail Stores',
-      description: 'Brick & mortar stores needing local delivery',
-      targeting: ['appliance stores', 'furniture stores', 'electronics stores', 'home improvement'],
-      painPoints: ['High delivery costs', 'Customer wait times', 'Limited delivery radius'],
-      savings: '30-50% delivery cost reduction'
+    weightFees: {
+      enabled: true,
+      light: 0, // 0-10 lbs
+      medium: 5, // 11-50 lbs
+      heavy: 15 // 50+ lbs
     },
-    'contractors': {
-      name: 'Contractors & Trades',
-      description: 'Construction and service businesses',
-      targeting: ['plumbers', 'electricians', 'contractors', 'HVAC', 'roofers'],
-      painPoints: ['Material delivery delays', 'Job site coordination', 'Multiple supplier pickups'],
-      savings: '40-60% time savings on material delivery'
-    },
-    'suppliers': {
-      name: 'Supply Companies',
-      description: 'Businesses selling to other businesses',
-      targeting: ['lumber yards', 'electrical suppliers', 'plumbing suppliers', 'hardware wholesalers'],
-      painPoints: ['Delivery scheduling conflicts', 'Customer service issues', 'Route optimization'],
-      savings: '25-40% operational cost reduction'
-    },
-    'restaurants': {
-      name: 'Restaurants & Food Service',
-      description: 'Food businesses needing ingredient delivery',
-      targeting: ['restaurants', 'catering', 'food trucks', 'cafes'],
-      painPoints: ['Ingredient delivery timing', 'Multiple supplier coordination', 'Last-minute orders'],
-      savings: '20-35% delivery cost savings'
-    },
-    'offices': {
-      name: 'Office & Professional',
-      description: 'Businesses needing document and supply delivery',
-      targeting: ['law firms', 'accounting firms', 'real estate', 'consulting'],
-      painPoints: ['Document delivery delays', 'Supply restocking', 'Client service'],
-      savings: '15-30% delivery cost reduction'
+    urgencyFees: {
+      sameDay: 20,
+      urgent: 35,
+      scheduled: 0
     }
   },
 
-  // Features
+  // Business Categories for Lead Generation
+  businessCategories: [
+    'Restaurants & Food Service',
+    'Retail Stores',
+    'Manufacturing',
+    'Healthcare',
+    'Construction',
+    'Landscaping',
+    'Automotive',
+    'Real Estate',
+    'Professional Services',
+    'E-commerce',
+    'Garden Centers',
+    'Hardware Stores',
+    'Contractors',
+    'Medical Supplies',
+    'Office Supplies'
+  ],
+
+  // Platform Features
   features: {
-    realTimeTracking: true,
-    multipleDrops: true,
-    terrainPricing: true,
-    addressAutoComplete: true,
-    crmIntegration: true,
+    customerPortal: true,
+    leadGeneration: true,
+    roiCalculator: true,
+    crmDashboard: true,
     analytics: true,
-    mobileApp: false, // Set to true if mobile app is available
-    apiAccess: false // Set to true if API access is provided
+    whiteLabel: true,
+    apiAccess: true,
+    mobileApp: false,
+    realTimeTracking: true,
+    paymentProcessing: true,
+    emailNotifications: true,
+    smsNotifications: true
   },
 
-  // Authentication
-  auth: {
-    demoCredentials: {
-      username: 'admin',
-      password: 'delivery2024'
-    },
-    requireMFA: false,
-    sessionTimeout: 24 // hours
+  // Authentication & Security
+  authentication: {
+    method: 'email', // email, phone, social
+    mfa: true,
+    sessionTimeout: 24, // hours
+    passwordPolicy: {
+      minLength: 8,
+      requireUppercase: true,
+      requireLowercase: true,
+      requireNumbers: true,
+      requireSpecialChars: true
+    }
   },
 
   // Integrations
   integrations: {
-    googlePlaces: false, // Set to true when API key is available
-    stripe: false, // Set to true when payment processing is added
-    twilio: false, // Set to true when SMS notifications are added
-    sendgrid: false // Set to true when email automation is added
+    googlePlaces: true,
+    stripe: true,
+    twilio: true,
+    sendGrid: true,
+    quickbooks: false,
+    shopify: false,
+    woocommerce: false
   },
 
   // Support
@@ -124,13 +139,13 @@ export const whiteLabelConfig = {
 
   // Legal
   legal: {
-    termsOfService: '/terms',
-    privacyPolicy: '/privacy',
-    serviceAgreement: '/agreement'
+    termsOfService: 'https://lmdhub.com/terms',
+    privacyPolicy: 'https://lmdhub.com/privacy',
+    serviceAgreement: 'https://lmdhub.com/agreement'
   }
 }
 
-// Helper function to get config value
+// Helper functions for configuration management
 export const getConfig = (path) => {
   const keys = path.split('.')
   let value = whiteLabelConfig
@@ -146,25 +161,18 @@ export const getConfig = (path) => {
   return value
 }
 
-// Helper function to update config
 export const updateConfig = (path, newValue) => {
   const keys = path.split('.')
   let current = whiteLabelConfig
   
   for (let i = 0; i < keys.length - 1; i++) {
-    if (current && typeof current === 'object' && keys[i] in current) {
-      current = current[keys[i]]
-    } else {
-      return false
+    if (!(keys[i] in current)) {
+      current[keys[i]] = {}
     }
+    current = current[keys[i]]
   }
   
-  if (current && typeof current === 'object' && keys[keys.length - 1] in current) {
-    current[keys[keys.length - 1]] = newValue
-    return true
-  }
-  
-  return false
+  current[keys[keys.length - 1]] = newValue
 }
 
 export default whiteLabelConfig

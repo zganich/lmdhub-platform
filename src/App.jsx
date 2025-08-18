@@ -10,7 +10,7 @@ import HowItWorks from './components/HowItWorks'
 import About from './components/About'
 import Contact from './components/Contact'
 import QuoteModal from './components/QuoteModal'
-import WhiteLabelBackOffice from './components/WhiteLabelBackOffice'
+import OptimizedBusinessHub from './components/OptimizedBusinessHub'
 import CustomerPortal from './components/CustomerPortal'
 import './App.css'
 
@@ -32,7 +32,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/customer/*" element={<CustomerPortal />} />
-          <Route path="/backoffice/*" element={<WhiteLabelBackOffice />} />
+                        <Route path="/backoffice/*" element={<OptimizedBusinessHub />} />
         </Routes>
 
         <QuoteModal 
