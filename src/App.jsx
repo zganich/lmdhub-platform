@@ -10,9 +10,7 @@ import HowItWorks from './components/HowItWorks'
 import About from './components/About'
 import Contact from './components/Contact'
 import QuoteModal from './components/QuoteModal'
-import LeadGenerator from './components/LeadGenerator'
-import ROICalculator from './components/ROICalculator'
-import CRMDashboard from './components/CRMDashboard'
+import BackOffice from './components/BackOffice'
 import './App.css'
 
 function App() {
@@ -32,9 +30,7 @@ function App() {
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/leads" element={<LeadGenerator />} />
-          <Route path="/roi-calculator" element={<ROICalculator />} />
-          <Route path="/crm" element={<CRMDashboard />} />
+          <Route path="/backoffice/*" element={<BackOffice />} />
         </Routes>
 
         <QuoteModal 

@@ -80,37 +80,7 @@ const Navigation = ({ onQuoteClick }) => {
               Contact
             </Link>
             
-            {/* Business Tools Dropdown */}
-            <div className="relative group">
-              <button className="text-gray-700 hover:text-blue-600 font-medium">
-                Business Tools
-              </button>
-              <div className="absolute top-full left-0 mt-2 w-64 bg-white shadow-lg rounded-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <div className="p-2">
-                  <Link 
-                    to="/leads" 
-                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                  >
-                    <div className="font-medium">Lead Generator</div>
-                    <div className="text-xs text-gray-500">Find potential customers</div>
-                  </Link>
-                  <Link 
-                    to="/roi-calculator" 
-                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                  >
-                    <div className="font-medium">ROI Calculator</div>
-                    <div className="text-xs text-gray-500">Calculate cost savings</div>
-                  </Link>
-                  <Link 
-                    to="/crm" 
-                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md"
-                  >
-                    <div className="font-medium">CRM Dashboard</div>
-                    <div className="text-xs text-gray-500">Manage leads & customers</div>
-                  </Link>
-                </div>
-              </div>
-            </div>
+
           </div>
 
           {/* CTA Buttons */}
@@ -195,33 +165,7 @@ const Navigation = ({ onQuoteClick }) => {
                 Contact
               </Link>
               
-              {/* Business Tools Mobile */}
-              <div className="border-t pt-3 mt-3">
-                <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Business Tools
-                </div>
-                <Link 
-                  to="/leads" 
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Lead Generator
-                </Link>
-                <Link 
-                  to="/roi-calculator" 
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  ROI Calculator
-                </Link>
-                <Link 
-                  to="/crm" 
-                  className="block px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  CRM Dashboard
-                </Link>
-              </div>
+
               <div className="border-t pt-3 mt-3">
                 <a 
                   href="tel:801-555-0123" 
