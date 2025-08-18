@@ -4,13 +4,13 @@
 export const whiteLabelConfig = {
   // Company Information
   company: {
-    name: 'Last Mile Express',
-    tagline: 'Professional Local Delivery Service',
-    domain: 'lastmileexpress.com',
+    name: 'LMDhub',
+    tagline: 'Last Mile Delivery Hub - Complete Delivery Management Platform',
+    domain: 'lmdhub.com',
     phone: '(801) 555-0123',
-    email: 'support@lastmileexpress.com',
+    email: 'support@lmdhub.com',
     address: 'Salt Lake City, UT',
-    website: 'https://lastmileexpress.com'
+    website: 'https://lmdhub.com'
   },
 
   // Branding
@@ -117,7 +117,7 @@ export const whiteLabelConfig = {
   // Support
   support: {
     phone: '(801) 555-0123',
-    email: 'support@lastmileexpress.com',
+    email: 'support@lmdhub.com',
     hours: 'Monday - Friday, 8AM - 6PM MST',
     emergency: '(801) 555-9999'
   },
