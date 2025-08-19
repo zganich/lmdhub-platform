@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
-import { X, MapPin, Clock, DollarSign, Calculator, Plus, Minus } from 'lucide-react'
+import { X, MapPin, Clock, DollarSign, Calculator, Plus, Minus, Search, CheckCircle, XCircle } from 'lucide-react'
+import googlePlacesService from '../services/googlePlacesService'
+import PaymentForm from './PaymentForm'
 
 const QuoteModal = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
@@ -31,6 +33,9 @@ const QuoteModal = ({ isOpen, onClose }) => {
   const [addressSuggestions, setAddressSuggestions] = useState([])
   const [showPickupSuggestions, setShowPickupSuggestions] = useState(false)
   const [showDeliverySuggestions, setShowDeliverySuggestions] = useState(false)
+  const [showPayment, setShowPayment] = useState(false)
+  const [distanceInfo, setDistanceInfo] = useState(null)
+  const [loadingAddress, setLoadingAddress] = useState(false)
 
   const serviceLevels = {
     'emergency': { name: 'Emergency (1 hour)', price: 25, time: '1 hour' },
@@ -63,21 +68,22 @@ const QuoteModal = ({ isOpen, onClose }) => {
     })
   }
 
-  // Address auto-population (mock implementation - replace with Google Places API)
-  const handleAddressInput = (field, value) => {
+  // Address auto-population with Google Places API
+  const handleAddressInput = async (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
     
     if (value.length > 3) {
-      // Mock suggestions based on Utah locations
-      const mockSuggestions = [
-        `${value}, Salt Lake City, UT 84101`,
-        `${value}, Sandy, UT 84092`,
-        `${value}, West Jordan, UT 84084`,
-        `${value}, Park City, UT 84060`,
-        `${value}, Provo, UT 84601`
-      ]
-      
-      setAddressSuggestions(mockSuggestions)
+      setLoadingAddress(true)
+      try {
+        // Try Google Places API first, fallback to mock data
+        const suggestions = await googlePlacesService.getAddressSuggestions(value);
+        setAddressSuggestions(suggestions.length > 0 ? suggestions : googlePlacesService.getMockSuggestions(value));
+      } catch (error) {
+        console.log('Using mock address suggestions:', error.message);
+        setAddressSuggestions(googlePlacesService.getMockSuggestions(value));
+      } finally {
+        setLoadingAddress(false);
+      }
       
       if (field.includes('pickup')) {
         setShowPickupSuggestions(true)
@@ -93,28 +99,61 @@ const QuoteModal = ({ isOpen, onClose }) => {
     }
   }
 
-  const selectAddress = (address, type) => {
-    const parts = address.split(', ')
-    if (type === 'pickup') {
-      setFormData(prev => ({
-        ...prev,
-        pickupAddress: parts[0],
-        pickupCity: parts[1],
-        pickupState: parts[2]?.split(' ')[0] || 'UT',
-        pickupZip: parts[2]?.split(' ')[1] || ''
-      }))
-      setShowPickupSuggestions(false)
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        deliveryAddress: parts[0],
-        deliveryCity: parts[1],
-        deliveryState: parts[2]?.split(' ')[0] || 'UT',
-        deliveryZip: parts[2]?.split(' ')[1] || ''
-      }))
-      setShowDeliverySuggestions(false)
+  const selectAddress = async (suggestion, type) => {
+    try {
+      // Get detailed place information
+      const placeDetails = await googlePlacesService.getPlaceDetails(suggestion.placeId);
+      const address = placeDetails.addressComponents;
+      
+      if (type === 'pickup') {
+        setFormData(prev => ({
+          ...prev,
+          pickupAddress: `${address.street_number} ${address.route}`.trim(),
+          pickupAddress2: address.subpremise || '',
+          pickupCity: address.locality || '',
+          pickupState: address.administrative_area_level_1 || '',
+          pickupZip: address.postal_code || ''
+        }))
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          deliveryAddress: `${address.street_number} ${address.route}`.trim(),
+          deliveryAddress2: address.subpremise || '',
+          deliveryCity: address.locality || '',
+          deliveryState: address.administrative_area_level_1 || '',
+          deliveryZip: address.postal_code || ''
+        }))
+      }
+    } catch (error) {
+      // Fallback to simple parsing
+      const parts = suggestion.description.split(', ')
+      if (type === 'pickup') {
+        setFormData(prev => ({
+          ...prev,
+          pickupAddress: parts[0],
+          pickupCity: parts[1] || '',
+          pickupState: parts[2]?.split(' ')[0] || 'UT',
+          pickupZip: parts[2]?.split(' ')[1] || ''
+        }))
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          deliveryAddress: parts[0],
+          deliveryCity: parts[1] || '',
+          deliveryState: parts[2]?.split(' ')[0] || 'UT',
+          deliveryZip: parts[2]?.split(' ')[1] || ''
+        }))
+      }
     }
+    
     setAddressSuggestions([])
+    setShowPickupSuggestions(false)
+    setShowDeliverySuggestions(false)
+    
+    // Calculate distance if both addresses are filled
+    if (formData.pickupAddress && formData.deliveryAddress) {
+      calculateDistance();
+    }
   }
 
   const addDropLocation = () => {
@@ -142,10 +181,28 @@ const QuoteModal = ({ isOpen, onClose }) => {
     }))
   }
 
+  const calculateDistance = async () => {
+    if (!formData.pickupAddress || !formData.deliveryAddress) return;
+    
+    try {
+      const origin = `${formData.pickupAddress}, ${formData.pickupCity}, ${formData.pickupState} ${formData.pickupZip}`;
+      const destination = `${formData.deliveryAddress}, ${formData.deliveryCity}, ${formData.deliveryState} ${formData.deliveryZip}`;
+      
+      const distanceInfo = await googlePlacesService.calculateDistance(origin, destination);
+      setDistanceInfo(distanceInfo);
+    } catch (error) {
+      console.log('Using mock distance calculation:', error.message);
+      const origin = `${formData.pickupAddress}, ${formData.pickupCity}, ${formData.pickupState} ${formData.pickupZip}`;
+      const destination = `${formData.deliveryAddress}, ${formData.deliveryCity}, ${formData.deliveryState} ${formData.deliveryZip}`;
+      const mockDistance = googlePlacesService.getMockDistance(origin, destination);
+      setDistanceInfo(mockDistance);
+    }
+  };
+
   const calculateQuote = () => {
-    // Enhanced pricing calculation with all features
+    // Enhanced pricing calculation with real distance
     const basePrice = pricingStructure.basePrice(formData.serviceLevel)
-    const estimatedDistance = Math.floor(Math.random() * 15) + 5 // 5-20 miles (replace with real distance calc)
+    const estimatedDistance = distanceInfo ? Math.round(distanceInfo.distance.value / 1609.34) : Math.floor(Math.random() * 15) + 5 // Convert meters to miles
     const mileageCharge = estimatedDistance > 10 ? (estimatedDistance - 10) * pricingStructure.perMile : 0
     
     // Terrain fee
@@ -191,6 +248,22 @@ const QuoteModal = ({ isOpen, onClose }) => {
       setStep(3)
     }
   }
+
+  const handlePaymentSuccess = (paymentData) => {
+    console.log('Payment successful:', paymentData);
+    // Here you would typically send the order to your backend
+    alert('Payment successful! Your delivery has been scheduled.');
+    onClose();
+  };
+
+  const handlePaymentError = (error) => {
+    console.error('Payment failed:', error);
+    alert(`Payment failed: ${error}`);
+  };
+
+  const proceedToPayment = () => {
+    setShowPayment(true);
+  };
 
   const resetModal = () => {
     setStep(1)
@@ -272,13 +345,19 @@ const QuoteModal = ({ isOpen, onClose }) => {
                     />
                     {showPickupSuggestions && addressSuggestions.length > 0 && (
                       <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 shadow-lg">
-                        {addressSuggestions.map((suggestion, index) => (
+                        {loadingAddress && (
+                          <div className="px-4 py-2 text-gray-500">
+                            Loading suggestions...
+                          </div>
+                        )}
+                        {!loadingAddress && addressSuggestions.map((suggestion, index) => (
                           <div 
-                            key={index}
+                            key={suggestion.id || index}
                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                             onClick={() => selectAddress(suggestion, 'pickup')}
                           >
-                            {suggestion}
+                            <div className="font-medium">{suggestion.structured?.main_text || suggestion.description}</div>
+                            <div className="text-sm text-gray-500">{suggestion.structured?.secondary_text || ''}</div>
                           </div>
                         ))}
                       </div>
@@ -342,13 +421,19 @@ const QuoteModal = ({ isOpen, onClose }) => {
                     />
                     {showDeliverySuggestions && addressSuggestions.length > 0 && (
                       <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg mt-1 shadow-lg">
-                        {addressSuggestions.map((suggestion, index) => (
+                        {loadingAddress && (
+                          <div className="px-4 py-2 text-gray-500">
+                            Loading suggestions...
+                          </div>
+                        )}
+                        {!loadingAddress && addressSuggestions.map((suggestion, index) => (
                           <div 
-                            key={index}
+                            key={suggestion.id || index}
                             className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                             onClick={() => selectAddress(suggestion, 'delivery')}
                           >
-                            {suggestion}
+                            <div className="font-medium">{suggestion.structured?.main_text || suggestion.description}</div>
+                            <div className="text-sm text-gray-500">{suggestion.structured?.secondary_text || ''}</div>
                           </div>
                         ))}
                       </div>
@@ -605,22 +690,51 @@ const QuoteModal = ({ isOpen, onClose }) => {
                   </div>
                 </div>
 
-                <div className="flex gap-4">
-                  <Button 
-                    type="button"
-                    variant="outline"
-                    onClick={() => setStep(1)}
-                    className="flex-1"
-                  >
-                    Back to Edit
-                  </Button>
-                  <Button 
-                    type="submit"
-                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    Submit Quote Request
-                  </Button>
-                </div>
+                {!showPayment ? (
+                  <div className="flex gap-4">
+                    <Button 
+                      type="button"
+                      variant="outline"
+                      onClick={() => setStep(1)}
+                      className="flex-1"
+                    >
+                      Back to Edit
+                    </Button>
+                    <Button 
+                      type="button"
+                      onClick={proceedToPayment}
+                      className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                    >
+                      <DollarSign className="mr-2 h-4 w-4" />
+                      Pay & Schedule Delivery
+                    </Button>
+                    <Button 
+                      type="submit"
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      Submit Quote Request
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <Button 
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowPayment(false)}
+                      className="w-full"
+                    >
+                      ← Back to Quote
+                    </Button>
+                    <PaymentForm
+                      amount={quote.totalPrice}
+                      onPaymentSuccess={handlePaymentSuccess}
+                      onPaymentError={handlePaymentError}
+                      deliveryDetails={formData}
+                      userType="sender"
+                    />
+                  </div>
+                )}
               </div>
             )}
 
