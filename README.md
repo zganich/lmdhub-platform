@@ -6,8 +6,11 @@
 
 ## 📋 Recent Updates (Latest: August 17, 2024)
 
-### ✅ Enhanced Quote Calculator
-- **Address Auto-Population**: Smart address suggestions as you type
+### ✅ Enhanced Quote Calculator with Payment Integration
+- **Google Places API Integration**: Real address autocomplete and distance calculation
+- **Stripe Payment Processing**: Secure online payments with card support
+- **Referral System**: Comprehensive referral codes for senders and couriers
+- **Coupon System**: Multiple discount types (first-time, business, seasonal, volume)
 - **Multiple Delivery Drops**: Support for multiple delivery locations with pricing
 - **Terrain-Based Pricing**: Different fees for flat, hilly, mountainous, and rural areas
 - **Address Line 2**: Support for suite/apartment numbers
@@ -72,34 +75,53 @@ last-mile-express/
 ## 💰 Pricing Calculator Features
 
 ### Enhanced QuoteModal.jsx Features:
-1. **Address Auto-Population**
-   - Type 3+ characters to see suggestions
-   - Automatically fills city, state, ZIP
-   - Ready for Google Places API integration
+1. **Google Places API Integration**
+   - Real address autocomplete with suggestions
+   - Automatic distance calculation
+   - Fallback to mock data for development
+   - Structured address parsing
 
-2. **Multiple Delivery Drops**
+2. **Stripe Payment Integration**
+   - Secure card payment processing
+   - Referral code validation and discounts
+   - Coupon code system with multiple types
+   - Real-time payment confirmation
+
+3. **Referral System**
+   - **Sender Referrals**: 10% discount for referred sender, $5 reward for referrer
+   - **Courier Referrals**: $25 signup bonus for new courier, $15 reward for referrer
+   - **Sender-to-Courier**: 15% discount for sender, $10 reward when courier completes deliveries
+
+4. **Coupon System**
+   - **FIRSTTIME**: 20% off for first-time senders
+   - **BUSINESS**: 15% off for business customers
+   - **HOLIDAY**: 12% off seasonal promotions
+   - **VOLUME**: 8% off for volume orders
+
+5. **Multiple Delivery Drops**
    - Checkbox to enable multiple drops
    - Add/remove additional delivery locations
    - $12 fee per additional drop
 
-3. **Terrain-Based Pricing**
+6. **Terrain-Based Pricing**
    - Flat/Urban: $0 extra
    - Hilly Areas: +$15
    - Mountain/Canyon: +$25
    - Rural/Remote: +$20
 
-4. **Complete Address Support**
+7. **Complete Address Support**
    - Street address with auto-completion
    - Address line 2 for suites/apartments
-   - City, State, ZIP validation
+   - City, state, ZIP validation
 
-5. **Enhanced Pricing Breakdown**
+8. **Enhanced Pricing Breakdown**
    - Base service price
-   - Distance-based mileage fees
+   - Real distance-based mileage fees
    - Terrain surcharges
    - Multiple drop fees
    - Heavy item fees (50+ lbs)
    - Rush delivery fees
+   - Referral and coupon discounts
 
 ## 🛠️ Development Commands
 
@@ -145,17 +167,38 @@ npm i -g vercel
 vercel --prod
 ```
 
-## 🔑 Environment Variables (Future)
-For Google Places API integration:
+## 🔑 Environment Variables
+
+### Required for Production:
+```bash
+# Google Places API (for address autocomplete and distance calculation)
+VITE_GOOGLE_PLACES_API_KEY=your_google_places_api_key_here
+
+# Stripe (for payment processing)
+VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key_here
+
+# Backend API (for production)
+VITE_API_BASE_URL=https://your-backend-api.com
 ```
-VITE_GOOGLE_PLACES_API_KEY=your_api_key_here
-```
+
+### Getting API Keys:
+1. **Google Places API**: 
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Enable Places API and Distance Matrix API
+   - Create credentials and get API key
+
+2. **Stripe**: 
+   - Sign up at [Stripe.com](https://stripe.com)
+   - Get publishable key from dashboard
+   - Set up webhook endpoints for payment processing
 
 ## 📝 Next Steps / TODO
 
 ### High Priority:
-- [ ] **Google Places API Integration** - Replace mock address suggestions
-- [ ] **Real Distance Calculation** - Google Maps Distance Matrix API
+- [x] **Google Places API Integration** - Real address suggestions and distance calculation
+- [x] **Stripe Payment Processing** - Secure online payments with referral/coupon support
+- [x] **Referral System** - Comprehensive sender and courier referral programs
+- [x] **Coupon System** - Multiple discount types and validation
 - [ ] **Contact Form Backend** - Handle form submissions
 - [ ] **Vercel Environment Variables** - Add API keys
 
@@ -243,6 +286,15 @@ pnpm dev
 ---
 
 ## 🔄 Change Log
+
+### August 19, 2024
+- ✅ Integrated Google Places API for real address autocomplete and distance calculation
+- ✅ Added Stripe payment processing with secure card payments
+- ✅ Implemented comprehensive referral system (Sender, Courier, Sender-to-Courier)
+- ✅ Created coupon system with multiple discount types
+- ✅ Added industry-specific nomenclature and terminology
+- ✅ Enhanced QuoteModal with payment integration and referral/coupon support
+- ✅ Implemented mock data fallback for development without API keys
 
 ### August 17, 2024
 - ✅ Enhanced QuoteModal with address auto-population
