@@ -1,7 +1,7 @@
-# Last Mile Express - Local Delivery Service Website
+# LMDhub - Last Mile Delivery Hub - Complete Delivery Management Platform
 
 ## 🚀 Live Website
-- **Production**: [https://last-mile-express.vercel.app/](https://last-mile-express.vercel.app/)
+- **Production**: [https://lmdhub.vercel.app/](https://lmdhub.vercel.app/)
 - **Repository**: [https://github.com/zganich/last-mile-express](https://github.com/zganich/last-mile-express)
 
 ## 📋 Recent Updates (Latest: August 17, 2024)

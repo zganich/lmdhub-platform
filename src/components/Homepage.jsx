@@ -24,11 +24,11 @@ const Homepage = ({ onQuoteClick }) => {
             <div className="space-y-8">
               <div className="space-y-4">
                 <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                  Smart local delivery is all about the{' '}
-                  <span className="text-blue-600">smart local touch</span>
+                  LMDhub - Complete{' '}
+                  <span className="text-blue-600">Delivery Management Platform</span>
                 </h1>
                 <p className="text-xl text-gray-600 leading-relaxed">
-                  AI-powered logistics with transparent pricing and friendly local service for your business
+                  Lead generation, customer portal, business intelligence, and white-label solutions for delivery companies
                 </p>
               </div>
               

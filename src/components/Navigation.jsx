@@ -19,7 +19,7 @@ const Navigation = ({ onQuoteClick }) => {
               <Mountain className="h-8 w-8 text-blue-600" />
               <Truck className="h-4 w-4 text-orange-500 absolute -bottom-1 -right-1" />
             </div>
-            <span className="text-xl font-bold text-gray-900">Last Mile Express</span>
+            <span className="text-xl font-bold text-gray-900">LMDhub</span>
           </Link>
 
           {/* Desktop Navigation */}
